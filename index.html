@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .container {
+        width: 100%;
+        margin-top: 22vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .success-info {
+        font-size: 20px;
+        font-weight: 600;
+        color: green;
+        text-align: center;
+        padding: 17px;
+        line-height: 28px;
+    }
+    .fail-info {
+        font-size: 20px;
+        font-weight: 600;
+        color: red;
+        text-align: center;
+        padding: 17px;
+        line-height: 28px;
+    }
+    .progress-info {
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+        padding: 17px;
+        line-height: 28px;
+    }
+    .loader {
+        border: 9px solid #f3f3f3; /* Light grey */
+        border-top: 9px solid orange; /* Blue */
+        border-radius: 50%;
+        width: 200px;
+        height: 200px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    input {
+        padding: 10px 15px;
+        font-size: 18px;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+    }
+    .user-info {
+        display: flex; 
+        gap: 12px; 
+        align-items: center;
+    }
+    .send-to-name {
+        font-size: 25px;
+    }
+    input[type=number]:focus {
+        border: 3px solid #6739b7
+    }
+    .debit-info {
+        font-size: 20px;
+        font-weight: 600;
+        text-align: left;
+    }
+    .debit-info-number {
+        font-size: 14px;
+    }
+    .btn {
+        padding: 15px 15px;
+        background-color: #6739b7;
+        color: white;
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        z-index: 100;
+    }
+</style>
+<body>
+
+    <div id="amountPage" class="container">
+        <div class="user-info">
+            <img src="/assets/user-icon.png" width="25" height="aut0" />
+            <span class="send-to-name">Sending money to Sundar</span>
+        </div>
+        <input id="amount" type="number" placeholder="Enter amount to send"/>
+        <input  type="text" placeholder="Optional message"/>
+
+        <div>
+            <span class="debit-info">
+                Debit from:
+            </span> 
+            <span class="debit-info-number">XXX 8765 XXX </span>
+            <span class="debit-info-number" style="color: green; font-weight: 600;">
+                ✓
+            </span>
+        </div>
+        <button class="btn" onclick="onSendPayment()">Send</button>
+    </div>
+
+    <div id="progress" style="display: none;" class="container">
+        <div class="loader"></div>
+        <div id="progress-info" class="progress-info">
+            Processing payment
+        </div>
+    </div>
+
+    <div id="success" style="display: none;" class="container">
+        <img src="/assets/tick-icon.png" width="200" height="200" />
+        <div id="success-info" class="success-info">
+            Payment of ₹ 1,000 sent to Sundar is successful
+        </div>
+    </div>
+
+    <div id="fail" style="display: none;" class="container">
+        <img src="/assets/fail-icon.jpeg" width="300" height="auto" />
+        <div id="fail-info" class="fail-info">
+            Your payment of ₹ 1,000 is failed
+        </div>
+    </div>
+
+    <script>
+        let amountInput = document.getElementById('amount');
+        function makePayment() {
+            document.getElementById('amountPage').style.display = 'none';
+            document.getElementById('progress').style.display = 'flex';
+            let amt = amountInput.value;
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (amt%2 === 0) {
+                        resolve('Payment successful');
+                    } else {
+                        reject('Payment failed');
+                    }
+                }, 2000); 
+            });
+        }
+
+        function successful(){
+            let success = document.createElement('div');
+            success.style.backgroundColor = 'green';
+        }
+
+        function onSendPayment() {
+            makePayment().then(message => {
+                console.log(message);
+                document.getElementById('progress').style.display = 'none';
+                let successInfo = document.getElementById('success-info');
+                successInfo.innerHTML = `Payment of ₹ ${amountInput.value} sent to Sundar is successful`;
+                let success = document.getElementById('success');
+                success.style.display = 'flex';
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById('progress').style.display = 'none';
+                let failInfo = document.getElementById('fail-info');
+                failInfo.innerHTML = `Your payment of ₹ ${amountInput.value} is failed!`;
+                let fail = document.getElementById('fail');
+                fail.style.display = 'flex';
+            });
+        }
+    </script>
+</body>
+</html>
